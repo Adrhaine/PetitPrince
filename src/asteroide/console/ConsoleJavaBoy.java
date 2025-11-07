@@ -1,7 +1,8 @@
 package asteroide.console;
 
 import asteroide.Sujet;
-//import petitPrince.jeu.JeuSimple;
+
+import jeu.JeuSimple;
 
 /**
  * 
@@ -12,7 +13,6 @@ import asteroide.Sujet;
  */
 public class ConsoleJavaBoy  {
 	private QuasiConsole qc = null;
-	private boolean echo = false;
 	
 	// rajout
 	private Sujet sujet;
@@ -49,9 +49,6 @@ public class ConsoleJavaBoy  {
 	 * @param s le message
 	 */
 	public void parler(String s) {
-		if (echo) {			
-			System.out.println("[" + sujet.getNom() + "] : " + s);			
-		}
 		qc.parler(s);
 	}
 
@@ -59,8 +56,9 @@ public class ConsoleJavaBoy  {
 	 * Permet d'afficher ou non les messages envoyes via la console sur le terminal
 	 * Valeur e faux par defaut, il peut etre utile pour tester de la mettre e vrai
 	 * @param e vrai si on fait l'echo sur le terminal
-	 */public void setEcho(boolean e) {
-		echo=e;
+	 */
+	public void setEcho(boolean e) {
+		qc.setEcho(e);
 	}
 	
 	/**
@@ -68,8 +66,8 @@ public class ConsoleJavaBoy  {
 	 * @param jeu le jeu auquel on va jouer
 	 * @param ref l'identifiant du joueur oppose
 	 */
-/*	public void jouer(JeuSimple jeu, int ref){
+	public void jouer(JeuSimple jeu, int ref){
 		qc.jouer(jeu,ref);
-	}*/
+	}
 
 }

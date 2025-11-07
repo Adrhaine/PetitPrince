@@ -12,9 +12,8 @@ import java.util.Hashtable;
 import java.util.Random;
 
 import asteroide.Sujet;
-/*import petitPrince.jeu.JeuSimple;
-import petitPrince.jeu.Joueur;
-*/
+import jeu.JeuSimple;
+import petitprince.Joueur;
 import asteroide.serveur.Asteroide325;
 import asteroide.serveur.VueSujet;
 
@@ -36,6 +35,8 @@ public class QuasiConsole extends UnicastRemoteObject implements Console {
 	private int[][] vision=new int[20][20];
 	private boolean cacheVue;
 	private Point pointErrance;
+	
+	private boolean echo = false;
 	
 	QuasiConsole (Sujet c) throws RemoteException {
 		super();
@@ -201,11 +202,20 @@ public class QuasiConsole extends UnicastRemoteObject implements Console {
 		return aux;
 	}
 	
+	
+	public void setEcho(boolean e) {
+		this.echo=e;
+	}
+	
+	
 	/**
 	 * Pour communiquer avec l'exterieur
 	 * @param s le message e transmettre
 	 */
 	public void parler(String s) {
+		if (echo) {
+			System.out.println("[" + c.getNom() + "] : " + s);
+		}
 		vs.setPhrase(vs.getPhrase()+" - "+s);
 	}
 
@@ -214,44 +224,50 @@ public class QuasiConsole extends UnicastRemoteObject implements Console {
 	 * @param jeu
 	 * @param ref l'adversaire
 	 */
-/*	public void jouer(JeuSimple jeu, int ref) {
+	public void jouer(JeuSimple jeu, int ref) {
 		String c1,c2;
 		int result;
 		Random r=new Random();
 		
 		if (vs.getArgent()<=0) {
-			parler("Je ne peux pas jouer e "+jeu.getNom()+" ! Pas assez d'argent ("+vs.getArgent()+")...");
+			parler("Je ne peux pas jouer e "+jeu.getNom()
+					+" ! Pas assez d'argent ("+vs.getArgent()+")...");
 			return;
 		}
 		
 		try {
-			if (! ((Asteroide325) server).peutJouer(vs.getRef(),ref)) 
+			if (! ((Asteroide325) server).peutJouer(vs.getRef(),ref)) {
 				parler("["+ref+"] ne veut pas ou ne peut pas jouer avec moi !");
+			}
 			else {
+				parler(" - Je joue avec " + "["+ref+"]");
 				c1=jeu.jouerUnTour();
 				c2=jeu.jouerUnTour();
-				result=r.nextBoolean()?jeu.arbitrer(c1,c2):jeu.arbitrer(c2,c1);
+//				result=r.nextBoolean()?jeu.arbitrer(c1,c2):jeu.arbitrer(c2,c1);
+				result = jeu.arbitrer(c1,c2);
 				if (result<0) {
-					((Joueur) c).perdre(1);
-					vs.setArgent(vs.getArgent()-1);
-					((Asteroide325) server).faireGagnerPerdre(ref,1);
-				} else if (result>0) {
 					((Joueur) c).gagner(1);
+					vs.setArgent(vs.getArgent()-1);
+					((Asteroide325) server).faireGagnerPerdre(ref, -1);
+				} else if (result>0) {
+					((Joueur) c).perdre(1);
 					vs.setArgent(vs.getArgent()+1);
-					((Asteroide325) server).faireGagnerPerdre(ref,-1);
-				} else parler("Ex-aequo au jeu de "+jeu.getNom());
+					((Asteroide325) server).faireGagnerPerdre(ref, +1);
+				} else { 
+					parler("Ex-aequo au jeu de "+jeu.getNom());
+				}
 			}
-		} catch (RemoteException e) {e.printStackTrace();}
+		} catch (RemoteException e) {
+			System.out.println(e);
+			e.printStackTrace();
+			}
 	}
-*/
 
 	/**
 	 * Vrai si le sujet implemente l'interface Joueur
 	 */
 	public boolean isJoueur() throws RemoteException {
-/*		return (c instanceof Joueur);
-*/
-		return false;
+		return (c instanceof Joueur);
 	}
 
 	/**
@@ -259,9 +275,8 @@ public class QuasiConsole extends UnicastRemoteObject implements Console {
 	 * Si ce n'est pas un 'Joueur', on ne fait rien
 	 */
 	public void faireGagnerPerdre(int qtite) throws RemoteException {
-/*		if (! isJoueur()) return;
+		if (! isJoueur()) return;
 		vs.setArgent(vs.getArgent()+qtite);
 		if (qtite>0) ((Joueur) c).gagner(qtite); else ((Joueur) c).perdre(-qtite);
-*/
 	}
 }
